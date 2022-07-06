@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TenmoServer.DAO
 {
-    public class AccountSqlDao
+    public class AccountSqlDao : IAccountDao
     {
         private readonly string connectionString;
 
@@ -28,7 +28,7 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT balance FROM account WHERE user_id = @userId;", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM account WHERE user_id = @userId;", conn);
                     cmd.Parameters.AddWithValue("@userId", UserId);
                     SqlDataReader reader = cmd.ExecuteReader();
 
