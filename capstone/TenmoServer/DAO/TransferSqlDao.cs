@@ -60,12 +60,39 @@ namespace TenmoServer.DAO
 
                 while (reader.Read())
                 {
-                    Transfer tranfer = GetTransferFromReader(reader);
-                    transfers.Add(tranfer);
+                    Transfer transfer = GetTransferFromReader(reader);
+                    transfers.Add(transfer);
                 }
             }
             return transfers;
         }
+
+        public Transfer CreateTransfer(Transfer newTransfer)
+        {
+            Transfer returnTransfer = null;
+            int newTransferId = 0;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(" INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) OUTPUT INSERTED.transfer_id VALUES(@transferTypeId, @transferStatusId, @accountFrom, @accountTo, @amount)", conn);
+
+                cmd.Parameters.AddWithValue("@transferTypeId", newTransfer.TransferTypeId);
+                cmd.Parameters.AddWithValue("@transferStatusId", newTransfer.TransferStatusId);
+                cmd.Parameters.AddWithValue("@accountFrom", newTransfer.AccountFrom);
+                cmd.Parameters.AddWithValue("@accountTo", newTransfer.AccountTo);
+                cmd.Parameters.AddWithValue("@amount", newTransfer.Amount);
+
+                newTransferId = Convert.ToInt32(cmd.ExecuteScalar());
+
+
+               
+            }
+            returnTransfer = GetTransfer(newTransferId);
+            return returnTransfer;
+        }
+
 
         private Transfer GetTransferFromReader(SqlDataReader reader)
             {

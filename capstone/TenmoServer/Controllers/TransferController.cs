@@ -47,5 +47,20 @@ namespace TenmoServer.Controllers
 
         }
 
+        [HttpPost()]
+        public ActionResult<Transfer> AddTransfer(Transfer transfer)
+        {
+            Transfer newTransfer = transferDao.CreateTransfer(transfer);
+
+            if (newTransfer != null)
+            {
+                return newTransfer;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
     }
 }
