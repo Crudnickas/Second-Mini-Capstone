@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace TenmoServer.Models
 {
-    public class Transfers
+    public class Transfer
     {
-        public int TranferId { get; set; }
+        public int TransferId { get; set; }
         public int TransferTypeId { get; set; }
         public int TransferStatusId { get; set; }
         public int AccountFrom { get; set; }
