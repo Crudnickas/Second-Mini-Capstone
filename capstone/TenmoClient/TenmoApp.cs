@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
 
+
 namespace TenmoClient
 {
     public class TenmoApp
@@ -73,12 +74,13 @@ namespace TenmoClient
 
             if (menuSelection == 1)
             {
-                // View your current balance
+                ViewBalance();
             }
 
             if (menuSelection == 2)
             {
                 // View your past transfers
+                GetTransfers();
             }
 
             if (menuSelection == 3)
@@ -89,6 +91,7 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                TransferTEBucks();
             }
 
             if (menuSelection == 5)
@@ -158,5 +161,78 @@ namespace TenmoClient
             }
             console.Pause();
         }
+
+        public void ViewBalance()
+        {
+            int currentUserId = tenmoApiService.UserId;
+            Account currentAccount = tenmoApiService.RetrieveAccount(currentUserId);
+            decimal currentBalance = currentAccount.Balance;
+            console.PrintSuccess($"yo insane! you have so much money! Look! {currentBalance}");
+            console.Pause();
+        }
+
+        public void GetTransfers()
+        {
+            int currentUserId = tenmoApiService.UserId;
+            Account currentAccount = tenmoApiService.RetrieveAccount(currentUserId);
+            List<Transfer> transfers = new List<Transfer>();
+            int currentAccountId = currentAccount.AccountId;
+            transfers = tenmoApiService.GetTransfersByAccountId(currentAccountId);
+
+            foreach(Transfer item in transfers)
+            {
+                console.PrintSuccess($"Transfer id: {item.TransferId}, from account: {item.AccountFrom}, to account: {item.AccountTo}, with the amount of: {item.Amount}.");
+
+            }
+            console.Pause();
+        }
+
+        public void TransferTEBucks()
+        {
+            List<User> listOfUsers = tenmoApiService.GetListOfUsers();
+            
+            foreach(User item in listOfUsers)
+            {
+                if (tenmoApiService.UserId != item.UserId)
+                {
+                    console.PrintSuccess($"User id: {item.UserId}, user name: {item.Username}");
+                }
+                
+            }
+            
+            //console.Pause();
+            int recievingUserId = console.PromptForInteger("Please enter the id of the user you want to send money to!");
+            decimal amountToSend = console.PromptForDecimal("Please enter the amount of money you want to send:)");
+            if(amountToSend <= 0)
+            {
+                console.PrintError("Hey, the amount you want to send needs to be more than 0 dummy!");
+                console.Pause();
+                return;
+            }
+
+            Account sendingAccount = tenmoApiService.RetrieveAccount(tenmoApiService.UserId);
+            Account recievingAccount = tenmoApiService.RetrieveAccount(recievingUserId);
+            if(amountToSend > sendingAccount.Balance)
+            {
+                console.PrintError("Hey, you dont have the funds for this playa'.");
+                console.Pause();
+                return;
+            }
+
+            sendingAccount.Balance -= amountToSend;
+            recievingAccount.Balance += amountToSend;
+            Transfer newTransfer = new Transfer(2, 2, sendingAccount.AccountId, recievingAccount.AccountId, amountToSend);
+           
+
+            tenmoApiService.UpdateAccount(sendingAccount);
+            tenmoApiService.UpdateAccount(recievingAccount);
+
+            tenmoApiService.CreateTransfer(newTransfer);
+            console.PrintSuccess($"You have sent {amountToSend} to {recievingUserId}!");
+
+
+        }
+
+
     }
 }
