@@ -9,5 +9,6 @@ namespace TenmoServer.DAO
     {
         Transfer GetTransfer(int transferId);
         List<Transfer> GetListOfTransfers(int accountId);
+        Transfer CreateTransfer(Transfer newTransfer);
     }
 }

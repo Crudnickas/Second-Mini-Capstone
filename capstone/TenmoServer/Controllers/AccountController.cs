@@ -31,5 +31,18 @@ namespace TenmoServer.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public ActionResult<Account> UpdateAccount(Account account)
+        {
+            bool isUpdated = accountDao.UpdateAccount(account);
+            if(isUpdated == true)
+            {
+                return account;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

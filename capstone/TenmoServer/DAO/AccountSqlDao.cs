@@ -46,6 +46,33 @@ namespace TenmoServer.DAO
             return returnAccount;
         }
 
+        public bool UpdateAccount(Account changedAccount)
+        {
+            bool isReturned = false;
+            
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand("UPDATE account SET balance = @balance WHERE account_id = @accountId;", conn);
+                cmd.Parameters.AddWithValue("@balance", changedAccount.Balance);
+                cmd.Parameters.AddWithValue("@accountId", changedAccount.AccountId);
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    isReturned = true;
+
+                }
+                return isReturned;
+            }
+
+        }
+
+
+
+
         private Account GetAccountFromReader(SqlDataReader reader)
         {
             Account a = new Account()
@@ -58,4 +85,5 @@ namespace TenmoServer.DAO
             return a;
         }
     }
+
 }
