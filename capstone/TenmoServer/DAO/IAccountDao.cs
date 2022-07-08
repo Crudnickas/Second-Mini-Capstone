@@ -10,5 +10,7 @@ namespace TenmoServer.DAO
     {
         Account GetAccount(int userId);
         bool UpdateAccount(Account changedAccount);
+        Account GetAccountByAccountId(int id);
+
     }
 }

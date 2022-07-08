@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using TenmoServer.DAO;
 using TenmoServer.Models;
 using TenmoServer.Security;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 namespace TenmoServer.Controllers
 {
-    
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
