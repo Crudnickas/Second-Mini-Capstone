@@ -364,8 +364,14 @@ namespace TenmoClient
             int transferId = console.PromptForInteger("Please enter transfer id to view details.");
             Transfer currentTransfer = tenmoApiService.GetTransferByTransferId(transferId);
             console.PrintSuccess($"Transfer id: {currentTransfer.TransferId}, from account: {currentTransfer.AccountFrom}, to account: {currentTransfer.AccountTo}, with the amount of: {currentTransfer.Amount}.");
-            int selectionInt = console.PromptForInteger("select 1 for approve and 2 for reject");
             Account recievingAccount = tenmoApiService.GetAccountByAccountId(currentTransfer.AccountTo);
+            if(recievingAccount.AccountId == currentAccount.AccountId)
+            {
+                console.PrintError("You cannot change the status of your own request.");
+                console.Pause();
+                return;
+            }
+            int selectionInt = console.PromptForInteger("select 1 for approve and 2 for reject");            
             if(selectionInt == 1)
             {
                 Transfer updatedTransfer = currentTransfer;
