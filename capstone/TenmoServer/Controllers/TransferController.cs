@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TenmoServer.DAO;
 using TenmoServer.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace TenmoServer.Controllers
 {
-    
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class TransferController :ControllerBase

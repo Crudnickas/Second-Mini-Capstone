@@ -55,5 +55,27 @@ namespace TenmoClient.Services
             CheckForError(response);
             return response.Data;
         }
+        public Transfer UpdateTransferStatus(Transfer updatedTransfer)
+        {
+            RestRequest rest = new RestRequest($"transfer/{updatedTransfer.TransferId}");
+            rest.AddJsonBody(updatedTransfer);
+            IRestResponse<Transfer> response = client.Put<Transfer>(rest);
+            CheckForError(response);
+            return response.Data;
+        }
+        public Transfer GetTransferByTransferId(int id)
+        {
+            RestRequest rest = new RestRequest($"transfer/{id}");
+            IRestResponse<Transfer> response = client.Get<Transfer>(rest);
+            CheckForError(response);
+            return response.Data;
+        }
+        public Account GetAccountByAccountId(int id)
+        {
+            RestRequest rest = new RestRequest($"account/accountid/{id}");
+            IRestResponse<Account> response = client.Get<Account>(rest);
+            CheckForError(response);
+            return response.Data;
+        }
     }
 }

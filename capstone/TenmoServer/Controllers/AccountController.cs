@@ -2,12 +2,14 @@
 using TenmoServer.DAO;
 using TenmoServer.Models;
 using TenmoServer.Security;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 
 namespace TenmoServer.Controllers
 {
-    
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -39,6 +41,20 @@ namespace TenmoServer.Controllers
         {
             bool isUpdated = accountDao.UpdateAccount(account);
             if(isUpdated == true)
+            {
+                return account;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpGet("accountid/{id}")]
+        public ActionResult<Account> RecieveAccountByAccountId(int id)
+        {
+            Account account = accountDao.GetAccountByAccountId(id);
+
+            if (account != null)
             {
                 return account;
             }
