@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using TenmoServer.DAO;
 using TenmoServer.Models;
 
+
 namespace TenmoServer.Controllers
 {
+    
     [Route("[controller]")]
     [ApiController]
     public class TransferController :ControllerBase
@@ -51,6 +53,21 @@ namespace TenmoServer.Controllers
         public ActionResult<Transfer> AddTransfer(Transfer transfer)
         {
             Transfer newTransfer = transferDao.CreateTransfer(transfer);
+
+            if (newTransfer != null)
+            {
+                return newTransfer;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<Transfer> ChangeTransfer(Transfer transfer)
+        {
+            Transfer newTransfer = transferDao.UpdateTransfer(transfer);
 
             if (newTransfer != null)
             {
