@@ -202,6 +202,9 @@ namespace TenmoClient
                 
             }
             Console.WriteLine("*******************************");
+            int transferId = console.PromptForInteger("Please enter transfer id to view details.");
+            Transfer currentTransfer = tenmoApiService.GetTransferByTransferId(transferId);
+            console.PrintSuccess($"Transfer id: {currentTransfer.TransferId}, from account: {currentTransfer.AccountFrom}, to account: {currentTransfer.AccountTo}, with the amount of: {currentTransfer.Amount}.");
             console.Pause();
         }
 
@@ -371,13 +374,15 @@ namespace TenmoClient
             List<Transfer> transfers = new List<Transfer>();
             int currentAccountId = currentAccount.AccountId;
             transfers = tenmoApiService.GetTransfersByAccountId(currentAccountId);
-
+            Console.WriteLine("|transfer id|account id|amount|");
+            Console.WriteLine("*******************************");
 
             foreach (Transfer item in transfers)
             {
                 if (item.TransferStatusId == 1)
                 {
-                    console.PrintSuccess($"Transfer id: {item.TransferId}, from account: {item.AccountFrom}, to account: {item.AccountTo}, with the amount of: {item.Amount}.");
+                    Console.WriteLine(string.Format($"|{item.TransferId,11}|to: {item.AccountTo,6}|{item.Amount,6}|"));
+                    //console.PrintSuccess($"Transfer id: {item.TransferId}, from account: {item.AccountFrom}, to account: {item.AccountTo}, with the amount of: {item.Amount}.");
                 }
             }
             int transferId = console.PromptForInteger("Please enter transfer id to view details.");
