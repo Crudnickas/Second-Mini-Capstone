@@ -181,30 +181,46 @@ namespace TenmoClient
             List<Transfer> transfers = new List<Transfer>();
             int currentAccountId = currentAccount.AccountId;
             transfers = tenmoApiService.GetTransfersByAccountId(currentAccountId);
-
-            foreach(Transfer item in transfers)
+            Console.WriteLine("|transfer id|account id|amount|");
+            Console.WriteLine("*******************************");
+            foreach (Transfer item in transfers)
             {
+                
+
                 if (item.TransferStatusId == 2)
                 {
-                    console.PrintSuccess($"Transfer id: {item.TransferId}, from account: {item.AccountFrom}, to account: {item.AccountTo}, with the amount of: {item.Amount}.");
+                    if(currentAccount.AccountId == item.AccountFrom)
+                    {
+                        //if we are the account thats sending money, show the account that is recieving it.
+                        Console.WriteLine(string.Format($"|{item.TransferId,11}|to: {item.AccountTo,6}|{item.Amount,6}|"));
+                    }
+                    else
+                    {
+                        Console.WriteLine(string.Format($"|{item.TransferId,11}|from: {item.AccountFrom,3}|{item.Amount,6}|"));
+                    }
                 }
+                
             }
+            Console.WriteLine("*******************************");
             console.Pause();
         }
 
         public void TransferTEBucks()
         {
             List<User> listOfUsers = tenmoApiService.GetListOfUsers();
-            
+            Console.WriteLine("| user id | user name |");
+            Console.WriteLine("***********************");
             foreach(User item in listOfUsers)
             {
                 if (tenmoApiService.UserId != item.UserId)
                 {
-                    console.PrintSuccess($"User id: {item.UserId}, user name: {item.Username}");
+                    Console.WriteLine(string.Format($"|{item.UserId,10}|{item.Username,10}|"));
                 }
                 
             }
-                        
+            Console.WriteLine("***********************");
+
+
             int recievingUserId = console.PromptForInteger("Please enter the id of the user you want to send money to.");
             if(recievingUserId == tenmoApiService.UserId)
             {
@@ -278,14 +294,17 @@ namespace TenmoClient
         {
             List<User> listOfUsers = tenmoApiService.GetListOfUsers();
 
+            Console.WriteLine("| user id | user name |");
+            Console.WriteLine("***********************");
             foreach (User item in listOfUsers)
             {
                 if (tenmoApiService.UserId != item.UserId)
                 {
-                    console.PrintSuccess($"User id: {item.UserId}, user name: {item.Username}");
+                    Console.WriteLine(string.Format($"|{item.UserId,10}|{item.Username,10}|"));
                 }
 
             }
+            Console.WriteLine("***********************");
             int requestedUserId = console.PromptForInteger("Please enter the id of the user you want to request money from.");
             if (requestedUserId == tenmoApiService.UserId)
             {
