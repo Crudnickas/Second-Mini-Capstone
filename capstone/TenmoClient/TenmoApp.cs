@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using System.Data.SqlClient;
 
 
 namespace TenmoClient
@@ -202,6 +203,12 @@ namespace TenmoClient
             
             //console.Pause();
             int recievingUserId = console.PromptForInteger("Please enter the id of the user you want to send money to!");
+            if(recievingUserId == tenmoApiService.UserId)
+            {
+                console.PrintError("STOP TRYING TO SEND MONEY TO YOURSELF");
+                console.Pause();
+                return;
+            }
             decimal amountToSend = console.PromptForDecimal("Please enter the amount of money you want to send:)");
             if(amountToSend <= 0)
             {
@@ -211,7 +218,18 @@ namespace TenmoClient
             }
 
             Account sendingAccount = tenmoApiService.RetrieveAccount(tenmoApiService.UserId);
-            Account recievingAccount = tenmoApiService.RetrieveAccount(recievingUserId);
+
+            Account recievingAccount = null;
+            try
+            {
+                recievingAccount = tenmoApiService.RetrieveAccount(recievingUserId);
+            }
+            catch(Exception exception)
+            {
+                console.PrintError("Invalid user id.");
+                console.Pause();
+                return;
+            }
             if(amountToSend > sendingAccount.Balance)
             {
                 console.PrintError("Hey, you dont have the funds for this playa'.");
@@ -219,16 +237,36 @@ namespace TenmoClient
                 return;
             }
 
+            Transfer newTransfer = null;
+            try
+            {
+                newTransfer = new Transfer(2, 2, sendingAccount.AccountId, recievingAccount.AccountId, amountToSend);
+            }
+            catch(Exception exception)
+            {
+                console.PrintError($"Invalid user id.{exception.Message}{exception.GetType()}");
+                console.Pause();
+                return;
+            }
             sendingAccount.Balance -= amountToSend;
             recievingAccount.Balance += amountToSend;
-            Transfer newTransfer = new Transfer(2, 2, sendingAccount.AccountId, recievingAccount.AccountId, amountToSend);
-           
-
+            
+          
             tenmoApiService.UpdateAccount(sendingAccount);
             tenmoApiService.UpdateAccount(recievingAccount);
 
-            tenmoApiService.CreateTransfer(newTransfer);
+            try
+            {
+                tenmoApiService.CreateTransfer(newTransfer);
+            }
+            catch (SqlException exception)
+            {
+                console.PrintError($"Invalid user id.{exception.Message}{exception.GetType()}");
+                console.Pause();
+                return;
+            }
             console.PrintSuccess($"You have sent {amountToSend} to {recievingUserId}!");
+            console.Pause();
 
 
         }
