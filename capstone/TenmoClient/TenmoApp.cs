@@ -202,8 +202,24 @@ namespace TenmoClient
                 
             }
             Console.WriteLine("*******************************");
-            int transferId = console.PromptForInteger("Please enter transfer id to view details.");
-            Transfer currentTransfer = tenmoApiService.GetTransferByTransferId(transferId);
+            int transferId = console.PromptForInteger("Please enter transfer id to view details. (0 to exit)");
+            if (transferId == 0)
+            {
+                console.PrintSuccess("Exiting back to main menu");
+                console.Pause();
+                return;
+            }
+            Transfer currentTransfer = null;
+            try 
+            { 
+            currentTransfer = tenmoApiService.GetTransferByTransferId(transferId);
+            }
+            catch (Exception exception)
+            {
+                console.PrintError("Invalid transfer id.");
+                console.Pause();
+                return;
+            }
             console.PrintSuccess($"Transfer id: {currentTransfer.TransferId}, from account: {currentTransfer.AccountFrom}, to account: {currentTransfer.AccountTo}, with the amount of: {currentTransfer.Amount}.");
             console.Pause();
         }
@@ -224,10 +240,16 @@ namespace TenmoClient
             Console.WriteLine("***********************");
 
 
-            int recievingUserId = console.PromptForInteger("Please enter the id of the user you want to send money to.");
+            int recievingUserId = console.PromptForInteger("Please enter the id of the user you want to send money to. (0 to exit)");
             if(recievingUserId == tenmoApiService.UserId)
             {
                 console.PrintError("Make sure you do not try to send money to yourself.");
+                console.Pause();
+                return;
+            }
+            if (recievingUserId == 0)
+            {
+                console.PrintSuccess("Exiting back to main menu");
                 console.Pause();
                 return;
             }
@@ -308,7 +330,13 @@ namespace TenmoClient
 
             }
             Console.WriteLine("***********************");
-            int requestedUserId = console.PromptForInteger("Please enter the id of the user you want to request money from.");
+            int requestedUserId = console.PromptForInteger("Please enter the id of the user you want to request money from. (0 to exit)");
+            if (requestedUserId == 0)
+            {
+                console.PrintSuccess("Exiting back to main menu");
+                console.Pause();
+                return;
+            }
             if (requestedUserId == tenmoApiService.UserId)
             {
                 console.PrintError("Make sure you do not try to send money to yourself.");
@@ -385,8 +413,24 @@ namespace TenmoClient
                     //console.PrintSuccess($"Transfer id: {item.TransferId}, from account: {item.AccountFrom}, to account: {item.AccountTo}, with the amount of: {item.Amount}.");
                 }
             }
-            int transferId = console.PromptForInteger("Please enter transfer id to view details.");
-            Transfer currentTransfer = tenmoApiService.GetTransferByTransferId(transferId);
+            int transferId = console.PromptForInteger("Please enter transfer id to view details. (0 to exit)");
+            if (transferId == 0)
+            {
+                console.PrintSuccess("Exiting back to main menu");
+                console.Pause();
+                return;
+            }
+            Transfer currentTransfer = null;
+            try
+            {
+                currentTransfer = tenmoApiService.GetTransferByTransferId(transferId);
+            }
+            catch (Exception exception)
+            {
+                console.PrintError("Invalid transfer id.");
+                console.Pause();
+                return;
+            }
             console.PrintSuccess($"Transfer id: {currentTransfer.TransferId}, from account: {currentTransfer.AccountFrom}, to account: {currentTransfer.AccountTo}, with the amount of: {currentTransfer.Amount}.");
             Account recievingAccount = tenmoApiService.GetAccountByAccountId(currentTransfer.AccountTo);
             if(recievingAccount.AccountId == currentAccount.AccountId)
